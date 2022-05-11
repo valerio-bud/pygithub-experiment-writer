@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 gh_client = Github(os.getenv('ACCESS_TOKEN'))
 ghRepo = Union[str, Repository]
-GhError = Union[str, List, List[Dict]]
+GhError = Union[str, List, Dict]
 
 
 def one_(obj: Union[List[Any], Any]) -> Any:
@@ -27,16 +27,21 @@ def check_status(exc: GithubException):
 
 
 def check_already_exists(error: GhError, expected_pattern: str = 'already exist'):
+    # find err
     if isinstance(error, list):
         if len(error) > 1:
             raise
-        message = error[0]['message']
-    elif isinstance(error, dict):
-        message = error['message']
-    elif isinstance(error, str):
-        message = error
+        err = error[0]
+    else:
+        err = error
+    # find message
+    if isinstance(err, dict):
+        message = err['message']
+    elif isinstance(err, str):
+        message = err
     else:
         raise
+    # check message
     if expected_pattern not in message:
         raise
 
