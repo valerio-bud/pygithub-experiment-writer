@@ -1,6 +1,7 @@
 import json
 import random
 from datetime import datetime
+from templates import PR_BODY
 import gh_utils as ghu
 
 
@@ -9,17 +10,13 @@ if __name__ == "__main__":
     BASE_BRANCH = 'main'
     UPDATED_AT = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     FEATURE_BRANCH = f'update/{UPDATED_AT[:-9]}'
-    PR_BODY = '''
-        ## Motivation and Context
-
-        Making an experiment of making PRs via python script.
-    '''
 
     # example of fetching data
-    content = json.loads(
-        ghu.get_file_content('thisisbud/backend-enrichment-sot', 'data/merchants/uk/v1.json')
-    )
-    new_content = json.dumps(random.choices(content, k=10), indent=2)
+    src_repo = 'thisisbud/backend-enrichment-sot'
+    src_file = 'data/merchants/uk/v1.json'
+    content = ghu.get_file_content(src_repo, src_file)
+    new_data = json.loads(content.decode())
+    new_content = json.dumps(random.choices(new_data, k=10), indent=2)
 
     ghu.create_branch(TARGET_REPO, FEATURE_BRANCH, BASE_BRANCH)
     ghu.update_file(
@@ -36,5 +33,3 @@ if __name__ == "__main__":
         title=f"Merchants Update: {UPDATED_AT}",
         body=PR_BODY,
     )
-
-    pass
