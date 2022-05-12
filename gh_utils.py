@@ -84,7 +84,7 @@ def check_already_exists(error: GhError, expected_pattern: str = 'already exist'
 def get_contents(
     repo: ghRepo,
     path: str,
-    ref: str = 'main',  # either branch or sha
+    ref: str = 'main',
 ) -> OptionalContents:
     """Get github object(s) in repo at the specified path and ref.
 
@@ -126,7 +126,7 @@ def read_content(content: ContentFile) -> bytes:
     return content.decoded_content
 
 
-def get_file_content(repo: ghRepo, file_path: str) -> bytes:
+def get_file_blob(repo: ghRepo, path: str, ref: str = 'main') -> bytes:
     """Extract file content (in bytes) of the file at file_path in the repo
 
     Args:
@@ -136,8 +136,8 @@ def get_file_content(repo: ghRepo, file_path: str) -> bytes:
     Returns:
         bytes: the content of the file
     """
-    file = one_(get_repo(repo).get_contents(file_path))
-    return read_content(file)
+    content = one_(get_contents(repo, path, ref))
+    return read_content(content)
 
 
 def get_tag_sha(repo: ghRepo, tag: str) -> str:

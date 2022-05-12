@@ -14,7 +14,7 @@ if __name__ == "__main__":
     # example of fetching data
     src_repo = 'thisisbud/backend-enrichment-sot'
     src_file = 'data/merchants/uk/v1.json'
-    content = ghu.get_file_content(src_repo, src_file)
+    content = ghu.get_file_blob(src_repo, src_file)
     new_data = json.loads(content.decode())
     new_content = json.dumps(random.choices(new_data, k=10), indent=2)
 
